@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import {
 	createAuthUserWithEmailAndPassword,
 	createUserDocumentFromAuth,
@@ -17,8 +17,8 @@ const defaultFormFields = {
 
 function SignUpForm() {
 	const [formField, setFormField] = useState(defaultFormFields);
-
 	const { displayName, email, password, confirmPassword } = formField;
+
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
@@ -47,6 +47,7 @@ function SignUpForm() {
 				displayName,
 			});
 			console.log(userDocRef);
+
 			setFormField(defaultFormFields);
 		} catch (error) {
 			if (error.code === 'auth/email-already-in-use') {

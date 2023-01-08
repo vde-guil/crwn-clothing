@@ -5,7 +5,9 @@ import {
 	signInWithPopup,
 	GoogleAuthProvider,
 	createUserWithEmailAndPassword,
-  signInWithEmailAndPassword
+	signInWithEmailAndPassword,
+	signOut,
+	onAuthStateChanged,
 } from 'firebase/auth';
 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
@@ -38,9 +40,11 @@ export const SignInWithGoogleRedirect = () =>
 
 export const db = getFirestore();
 
-export const createUserDocumentFromAuth = async (userAuth, additionnalInfos = {}) => {
-  if (!userAuth)
-    return ;
+export const createUserDocumentFromAuth = async (
+	userAuth,
+	additionnalInfos = {},
+) => {
+	if (!userAuth) return;
 
 	const userDocRef = doc(db, 'users', userAuth.uid);
 
@@ -55,14 +59,14 @@ export const createUserDocumentFromAuth = async (userAuth, additionnalInfos = {}
 				displayName,
 				email,
 				createdAt,
-        ...additionnalInfos
+				...additionnalInfos,
 			});
 		} catch (error) {
 			console.log('Error creating the user', error.message);
 		}
 	} else {
-    console.log('user already exists')
-  }
+		console.log('user already exists');
+	}
 
 	return userDocRef;
 };
@@ -72,13 +76,19 @@ export const createAuthUserWithEmailAndPassword = async (email, password) => {
 		return;
 	}
 
-  return await createUserWithEmailAndPassword(auth, email, password);
+	return await createUserWithEmailAndPassword(auth, email, password);
 };
 
 export const signInAuthUserWithEmailAndPassword = async (email, password) => {
-  if (!email || !password) {
+	if (!email || !password) {
 		return;
 	}
 
-  return await signInWithEmailAndPassword(auth, email, password);
-}
+	return await signInWithEmailAndPassword(auth, email, password);
+};
+
+export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) => {
+	return onAuthStateChanged(auth, callback);
+};
