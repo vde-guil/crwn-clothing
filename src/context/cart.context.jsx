@@ -4,15 +4,32 @@ export const CartContext = createContext({
 	cartItems: [],
 	setCartItems: () => {},
 	isCartOpen: false,
-	setIsCartOpen: () => {},
+	addItemToCart: () => {},
 });
+
+const addCartItem = (cartItems, productToAdd) => {
+  const newCartItems = [...cartItems];
+  const itemFound = newCartItems.find((item) => item.id === productToAdd.id)
+  if (itemFound) {
+    itemFound.quantity++;
+  } else {
+    newCartItems.push({...productToAdd, quantity: 1});
+  }
+
+  return newCartItems;
+}
 
 export const CartProvider = ({ children }) => {
 	const [cartItems, setCartItems] = useState([]);
 	const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const addItemToCart = (productToAdd) => {
+    setCartItems(addCartItem(cartItems, productToAdd));
+  }
+
 	const value = {
 		cartItems,
-		setCartItems,
+		addItemToCart,
 		isCartOpen,
 		setIsCartOpen,
 	};
