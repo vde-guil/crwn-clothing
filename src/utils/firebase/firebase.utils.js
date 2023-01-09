@@ -10,7 +10,16 @@ import {
 	onAuthStateChanged,
 } from 'firebase/auth';
 
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import {
+	getFirestore,
+	doc,
+	getDoc,
+	setDoc,
+	collection,
+	writeBatch,
+	getDocs,
+	query,
+} from 'firebase/firestore';
 
 const firebaseConfig = {
 	apiKey: 'AIzaSyAjRiwwXQQQDjwp2PKIZ-YMXmMAJH7t_2o',
@@ -21,7 +30,7 @@ const firebaseConfig = {
 	appId: '1:234010588531:web:1dc5f0cbf025f005050106',
 };
 
-// Initialize Firebase
+// INITIALIZE FIREBASE
 const firebaseApp = initializeApp(firebaseConfig);
 
 const provider = new GoogleAuthProvider();
@@ -36,9 +45,42 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 export const SignInWithGoogleRedirect = () =>
 	signInWithRedirect(auth, provider);
 
-// FIRESTORE
-
 export const db = getFirestore();
+
+// FIRESTORE DOCUMENTS MANIPULATION
+
+export const addCollectionAndDocuments = async (
+	collectionKey,
+	objectsToAdd,
+	field,
+) => {
+	const collectionRef = collection(db, collectionKey);
+	const batch = writeBatch(db); //batch is to make transactions (multiple creation, if one failes => rollback)
+
+	objectsToAdd.forEach((object) => {
+		const docRef = doc(collectionRef, object[field].toLowerCase());
+		batch.set(docRef, object);
+	});
+
+	await batch.commit();
+	console.log('done');
+};
+
+export const getCategoriesAndDocuments = async () => {
+	const collectionRef = collection(db, 'categories');
+
+	const q = query(collectionRef);
+	const querySnapshot = await getDocs(q);
+
+	// querySnapshot.forEach((doc) => console.log(doc.data()));
+	const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+		const { title, items } = docSnapshot.data();
+		acc[title.toLowerCase()] = items;
+		return acc;
+	}, {});
+
+	return categoryMap;
+};
 
 export const createUserDocumentFromAuth = async (
 	userAuth,
@@ -71,6 +113,8 @@ export const createUserDocumentFromAuth = async (
 	return userDocRef;
 };
 
+// FIREBASE AUTH
+
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
 	if (!email || !password) {
 		return;
@@ -92,3 +136,5 @@ export const signOutUser = async () => await signOut(auth);
 export const onAuthStateChangedListener = (callback) => {
 	return onAuthStateChanged(auth, callback);
 };
+
+// FIREBASE SHOP_DATA

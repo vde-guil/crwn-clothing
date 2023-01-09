@@ -57,7 +57,6 @@ export const CartProvider = ({ children }) => {
 	};
 
 	const total = useMemo(() => {
-		console.log("computing total")
 		return cartItems.reduce((total, item) => {
 			return total + item.price * item.quantity;
 		}, 0);
