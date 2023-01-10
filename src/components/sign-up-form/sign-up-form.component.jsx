@@ -1,12 +1,12 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import {
 	createAuthUserWithEmailAndPassword,
 	createUserDocumentFromAuth,
 } from '../../utils/firebase/firebase.utils';
-import Button , {BUTTON_TYPES_CLASSES} from '../button/button.component';
+import Button, { BUTTON_TYPES_CLASSES } from '../button/button.component';
 import FormInput from '../form-input/form-input.component';
 
-import {SignUpContainer} from './sign-up-form.style.jsx';
+import { SignUpContainer } from './sign-up-form.style.jsx';
 
 const defaultFormFields = {
 	displayName: '',
@@ -18,7 +18,6 @@ const defaultFormFields = {
 function SignUpForm() {
 	const [formField, setFormField] = useState(defaultFormFields);
 	const { displayName, email, password, confirmPassword } = formField;
-
 
 	const handleChange = (event) => {
 		const { name, value } = event.target;
@@ -42,10 +41,9 @@ function SignUpForm() {
 				password,
 			);
 
-			const userDocRef = await createUserDocumentFromAuth(user, {
+			await createUserDocumentFromAuth(user, {
 				displayName,
 			});
-			console.log(userDocRef);
 
 			setFormField(defaultFormFields);
 		} catch (error) {
@@ -98,7 +96,9 @@ function SignUpForm() {
 					value={confirmPassword}
 				/>
 
-				<Button buttonType={BUTTON_TYPES_CLASSES.base} type='submit'>Sign Up</Button>
+				<Button buttonType={BUTTON_TYPES_CLASSES.base} type='submit'>
+					Sign Up
+				</Button>
 			</form>
 		</SignUpContainer>
 	);
