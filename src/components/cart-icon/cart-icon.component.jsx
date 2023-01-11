@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import { CartContext } from '../../context/cart.context';
 
 import {
@@ -8,22 +8,16 @@ import {
 } from './cart-icon.style.jsx';
 
 function CartIcon() {
-	const { setIsCartOpen, cartItems } = useContext(CartContext);
+	const { toggleIsCartOpen, cartCount } = useContext(CartContext);
 
-	const toggleIsCartOpen = () => {
-		setIsCartOpen((prev) => !prev);
+	const toggleCartDropdown = () => {
+		toggleIsCartOpen();
 	};
 
-	const count = useMemo(() => {
-		return cartItems.reduce((acc, item) => {
-			return (acc += item.quantity);
-		}, 0);
-	}, [cartItems]);
-
 	return (
-		<CartIconContainer onClick={toggleIsCartOpen}>
+		<CartIconContainer onClick={toggleCartDropdown}>
 			<ShoppingIcon />
-			<ItemCount>{count}</ItemCount>
+			<ItemCount>{cartCount}</ItemCount>
 		</CartIconContainer>
 	);
 }

@@ -13,12 +13,12 @@ import {
 } from './cart-dropdown.style.jsx';
 
 function CartDropdown() {
-	const { cartItems, setIsCartOpen } = useContext(CartContext);
+	const { cartItems, toggleIsCartOpen } = useContext(CartContext);
 
 	const navigate = useNavigate();
 
 	const goToCheckoutHandler = () => {
-		setIsCartOpen(false);
+		toggleIsCartOpen();
 		navigate('/checkout');
 	};
 
