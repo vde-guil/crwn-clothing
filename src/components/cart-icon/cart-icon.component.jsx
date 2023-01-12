@@ -14,6 +14,7 @@ function CartIcon() {
 
 	const isCartOpen = useSelector(selectIsCartOpen);
 	const cartCount = useSelector(selectCartCount);
+	
 	const toggleCartDropdown = () => {
 		dispatch(toggleIsCartOpen(!isCartOpen));
 	};
