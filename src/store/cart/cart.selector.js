@@ -1,4 +1,5 @@
-import { createSelector } from 'reselect';
+import { createSelector } from "@reduxjs/toolkit";
+
 
 const selectCartReducer = (state) => state.cart;
 
