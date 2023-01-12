@@ -19,3 +19,13 @@ export const selectCategoriesMap = createSelector(
 		return categoryMap;
 	},
 );
+
+export const selectIsLoading = createSelector(
+	[selectCategoryReducer],
+	(categoriesState) => categoriesState.isLoading
+)
+
+export const selectError = createSelector(
+	[selectCategoryReducer],
+	(categoriesState) => categoriesState.error
+)
