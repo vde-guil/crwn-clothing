@@ -1,13 +1,8 @@
 import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import {
-	createUserDocumentFromAuth,
-	onAuthStateChangedListener,
-} from './utils/firebase/firebase.utils';
-
 // REDUX ACTIONS
-import { setCurrentUser } from './store/user/user.actions';
+import { checkUserSession, /*setCurrentUser*/ } from './store/user/user.actions';
 
 import { useDispatch } from 'react-redux';
 
@@ -21,14 +16,15 @@ function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const unsubscribe = onAuthStateChangedListener((user) => {
-			if (user) {
-				createUserDocumentFromAuth(user);
-			}
-			dispatch(setCurrentUser(user));
-		});
+		dispatch(checkUserSession());
+		// const unsubscribe = onAuthStateChangedListener((user) => {
+		// 	if (user) {
+		// 		createUserDocumentFromAuth(user);
+		// 	}
+		// 	dispatch(setCurrentUser(user));
+		// });
 
-		return unsubscribe;
+		// return unsubscribe;
 	}, [dispatch]);
 
 	return (

@@ -72,7 +72,7 @@ export const getCategoriesAndDocuments = async () => {
 	const q = query(collectionRef);
 	const querySnapshot = await getDocs(q);
 
-	return querySnapshot.docs.map(docSnapshot => docSnapshot.data())
+	return querySnapshot.docs.map((docSnapshot) => docSnapshot.data());
 };
 
 export const createUserDocumentFromAuth = async (
@@ -83,7 +83,7 @@ export const createUserDocumentFromAuth = async (
 
 	const userDocRef = doc(db, 'users', userAuth.uid);
 
-	const userSnapshot = await getDoc(userDocRef);
+	let userSnapshot = await getDoc(userDocRef);
 
 	if (!userSnapshot.exists()) {
 		const { displayName, email } = userAuth;
@@ -96,14 +96,14 @@ export const createUserDocumentFromAuth = async (
 				createdAt,
 				...additionnalInfos,
 			});
+
+			userSnapshot = await getDoc(userDocRef);
+
 		} catch (error) {
 			console.log('Error creating the user', error.message);
 		}
-	} else {
-		console.log('user already exists');
 	}
-
-	return userDocRef;
+	return userSnapshot;
 };
 
 // FIREBASE AUTH
@@ -131,3 +131,18 @@ export const onAuthStateChangedListener = (callback) => {
 };
 
 // FIREBASE SHOP_DATA
+
+export const getCurrentUser = () => {
+	return new Promise((resolve, reject) => {
+		const unsubscribe = onAuthStateChanged(
+			auth,
+			(userAuth) => {
+				unsubscribe();
+				resolve(userAuth);
+			},
+			(error) => {
+				return reject(error);
+			},
+		);
+	});
+};

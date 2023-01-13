@@ -1,11 +1,14 @@
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-	signInAuthUserWithEmailAndPassword,
-	signInWithGooglePopup,
-} from '../../utils/firebase/firebase.utils';
+	emailSignInStart,
+	googleSignInStart,
+} from '../../store/user/user.actions';
+import { selectIsLoading } from '../../store/user/user.selector';
 
 import Button, { BUTTON_TYPES_CLASSES } from '../button/button.component';
 import FormInput from '../form-input/form-input.component';
+import Spinner from '../spinner/spinner.component';
 
 import { ButtonsContainer, SignInContainer } from './sign-in-form.style.jsx';
 
@@ -18,8 +21,11 @@ function SignInForm() {
 	const [formFields, setFormFields] = useState(defaultFormFields);
 	const { email, password } = formFields;
 
+	const dispatch = useDispatch();
+	const isLoading = useSelector(selectIsLoading);
+
 	const signInWithGoogle = async () => {
-		await signInWithGooglePopup();
+		dispatch(googleSignInStart());
 	};
 
 	const handleChange = (event) => {
@@ -31,19 +37,17 @@ function SignInForm() {
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 
-		try {
-			await signInAuthUserWithEmailAndPassword(email, password);
-
-			setFormFields(defaultFormFields);
-		} catch (error) {
-			if (
-				error.code === 'auth/user-not-found' ||
-				error.code === 'auth/wrong-password'
-			) {
-				alert('Sign In Error');
-			}
-		}
+		dispatch(emailSignInStart(email, password));
+		setFormFields(defaultFormFields);
 	};
+
+	if (isLoading) {
+		return (
+			<SignInContainer>
+				<Spinner />
+			</SignInContainer>
+		);
+	}
 
 	return (
 		<SignInContainer>
