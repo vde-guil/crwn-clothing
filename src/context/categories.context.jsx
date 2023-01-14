@@ -1,25 +1,47 @@
 import { createContext, useState, useEffect } from 'react';
-import { getCategoriesAndDocuments } from '../utils/firebase/firebase.utils';
+// import { getCategoriesAndDocuments } from '../utils/firebase/firebase.utils';
+
+import { gql, useQuery } from '@apollo/client';
+
+const COLLECTIONS = gql`
+	query getCollections {
+		collections {
+			id
+			title
+			items {
+				id
+				name
+				price
+				imageUrl
+			}
+		}
+	}
+`;
 
 export const CategoriesContext = createContext({
 	categoriesMap: {},
 });
 
-export const CategoriesProvider = ({children}) => {
+export const CategoriesProvider = ({ children }) => {
+	const { loading, error, data } = useQuery(COLLECTIONS);
 	const [categoriesMap, setCategoriesMap] = useState({});
 
-	useEffect(() => {
-		const fetchCategories = async () => {
-			const categories = await getCategoriesAndDocuments()
+	useEffect(()=> {
+		if (data) {
+			const {collections} = data;
+			const categoriesObject = collections.reduce((acc, {title, items}) => {
+				acc[title.toLowerCase()] = items;
+				return acc;
+			}, {});
+			setCategoriesMap(categoriesObject)
+		}
+	}, [data])
 
-			setCategoriesMap(categories);
-		};
-
-		fetchCategories();
-	}, [])
 
 	const value = {
 		categoriesMap,
+		loading,
+		error
 	};
 
 	return (
