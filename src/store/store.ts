@@ -34,7 +34,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // 	Boolean,
 // );
 
-const middleWares = [sagaMiddleware, process.env.NODE_ENV !== 'production' && logger].filter(
+const middleWares = [sagaMiddleware, process.env.NODE_ENV === 'production' && logger].filter(
 		(middleware ): middleware is Middleware => Boolean(middleware),
 	);
 

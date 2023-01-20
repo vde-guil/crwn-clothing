@@ -6,6 +6,9 @@ import {
 import { CategoryItem } from '../categories/categories.types';
 import { CART_ACTION_TYPES, CartItem } from './cart.types';
 
+
+
+
 const addCartItem = (
 	cartItems: CartItem[],
 	productToAdd: CategoryItem,
@@ -18,6 +21,7 @@ const addCartItem = (
 		return cartItems.map((item) => {
 			if (item.id === productToAdd.id) {
 				item.quantity += 1;
+				return { ...item };
 			}
 			return item;
 		});
@@ -34,8 +38,13 @@ const removeCartItem = (
 	const itemFound = cartItems.find((item) => item.id === productToRemove.id);
 
 	if (itemFound && itemFound.quantity > 1) {
-		itemFound.quantity--;
-		return [...cartItems];
+		// itemFound.quantity--;
+		return cartItems.map((cartItem) => {
+			if (itemFound.id === cartItem.id) {
+				return { ...cartItem, quantity: cartItem.quantity - 1 };
+			}
+			return cartItem;
+		});
 	}
 
 	return cartItems.filter((item) => item.id !== productToRemove.id);
@@ -74,7 +83,10 @@ export const addItemToCart = withMatcher(
 );
 
 export const removeItemFromCart = withMatcher(
-	(productToRemove: CategoryItem, cartItems: CartItem[]): RemoveItemFromCart => {
+	(
+		productToRemove: CategoryItem,
+		cartItems: CartItem[],
+	): RemoveItemFromCart => {
 		const newCartItems = removeCartItem(cartItems, productToRemove);
 		return createAction(
 			CART_ACTION_TYPES.REMOVE_ITEM_FROM_CART,

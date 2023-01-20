@@ -1,3 +1,4 @@
+import {memo} from 'react'
 import { CartItem as CartItemType} from '../../store/cart/cart.types';
 import {
 	CartItemContainer,
@@ -10,19 +11,23 @@ type CartItemProps = {
 	cartItem: CartItemType
 }
 
-function CartItem({ cartItem }: CartItemProps) {
+const memoCartItem = memo(function CartItem({ cartItem }: CartItemProps) {
 	const { name, quantity, imageUrl, price } = cartItem;
+
+
+	console.log('rerender item: '+ cartItem.id)
+
 	return (
 		<CartItemContainer>
 			<img src={imageUrl} alt={name} />
 			<ItemDetails>
 				<Name>{name}</Name>
 				<Price>
-					{quantity} x ${price}{' '}
+					{quantity} x ${price}
 				</Price>
 			</ItemDetails>
 		</CartItemContainer>
 	);
-}
+})
 
-export default CartItem;
+export default memoCartItem;
