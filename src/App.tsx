@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 // import Shop from './routes/shop/shop.component';
 // import Checkout from './routes/checkout/checkout.component';
 import Spinner from './components/spinner/spinner.component';
+import { GlobalStyle } from './global.styles';
 
 // dynamic imports
 const Home = lazy(() => import('./routes/home/home.component'));
@@ -41,6 +42,7 @@ function App() {
 
 	return (
 		<Suspense fallback={<Spinner/>}>
+			<GlobalStyle />
 			<div className='App'>
 				<Routes>
 					<Route path='/' element={<Navigation />}>
